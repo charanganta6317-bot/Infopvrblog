@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Daily Blog | Insights & Thoughts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google AdSense Auto Ads Script (Replace YOUR_CLIENT_ID with your actual ID from Google) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root { --bg-primary: #ffffff; --text-primary: #1a1a1a; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .dark { background-color: #121212; color: #e5e5e5; }
+        .blog-card { transition: transform 0.2s ease-in-out; }
+        .blog-card:hover { transform: translateY(-4px); }
+        #editor-ui, #privacy-modal { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .dark .glass { background: rgba(30, 30, 30, 0.8); }
+        
+        /* AdSense Placeholder Styling */
+        .ad-placeholder { background: #f3f4f6; border: 1px dashed #d1d5db; min-height: 90px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #9ca3af; margin: 20px 0; border-radius: 8px; }
+        .dark .ad-placeholder { background: #1f2937; border-color: #374151; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Cookie Consent Banner (Required for AdSense/GDPR Approval) -->
+    <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 bg-indigo-900 text-white p-4 z-[100] flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+        <p>We use cookies to personalize content and ads, and to analyze our traffic. By clicking "Accept", you consent to our use of cookies in accordance with our Privacy Policy.</p>
+        <div class="flex gap-4">
+            <button onclick="closeCookies()" class="underline">Decline</button>
+            <button onclick="closeCookies()" class="bg-white text-indigo-900 px-6 py-2 rounded-lg font-bold">Accept</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass shadow-sm px-6 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold tracking-tighter text-indigo-600 cursor-pointer" onclick="window.location.reload()">DAILY.BLOG</h1>
+        <div class="flex items-center gap-6">
+            <button onclick="toggleDarkMode()" class="text-gray-500 hover:text-indigo-600">
+                <i class="fas fa-moon text-xl" id="dark-icon"></i>
+            </button>
+            <button onclick="toggleEditor()" class="bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-indigo-700 transition-colors">
+                <i class="fas fa-pen mr-2"></i> Write Post
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        
+        <!-- Header Ad Slot -->
+        <div class="ad-placeholder">
+            <span>ADVERTISEMENT (Header Banner)</span>
+            <!-- Once approved, paste your <ins> tag here -->
+        </div>
+
+        <header class="mb-12 text-center">
+            <h2 class="text-4xl font-extrabold mb-4">Thoughts, daily.</h2>
+            <p class="text-gray-500 max-w-lg mx-auto">High-quality content on tech, design, and life. Optimized for readers and updated every 24 hours.</p>
+        </header>
+
+        <!-- Search & Filter Bar -->
+        <div class="mb-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div class="relative w-full md:w-64">
+                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                <input type="text" id="search-input" onkeyup="searchPosts()" placeholder="Search posts..." 
+                       class="w-full pl-10 pr-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
+                <button onclick="filterPosts('All')" class="category-btn active bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">All</button>
+                <button onclick="filterPosts('Tech')" class="category-btn bg-white border px-4 py-1 rounded-full text-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700">Tech</button>
+                <button onclick="filterPosts('Life')" class="category-btn bg-white border px-4 py-1 rounded-full text-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700">Life</button>
+            </div>
+        </div>
+
+        <!-- Blog Posts Grid -->
+        <div id="posts-container" class="grid gap-8">
+            <!-- JavaScript will inject cards here -->
+        </div>
+
+        <!-- Mid-Page Ad Slot -->
+        <div class="ad-placeholder mt-12">
+            <span>ADVERTISEMENT (In-Feed)</span>
+        </div>
+
+    </main>
+
+    <!-- Privacy Policy Modal (Required for AdSense) -->
+    <div id="privacy-modal" class="fixed inset-0 z-[70] bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-2xl shadow-2xl h-[80vh] overflow-y-auto p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Privacy Policy</h3>
+                <button onclick="togglePrivacy()" class="text-gray-400 hover:text-red-500 text-xl transition-colors"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="prose dark:prose-invert text-sm text-gray-600 dark:text-gray-400 space-y-4">
+                <p><strong>Last Updated:</strong> February 14, 2026</p>
+                <p>This Privacy Policy describes how your personal information is collected, used, and shared when you visit this blog. We are committed to protecting your data and being transparent about our practices.</p>
+                
+                <h4 class="font-bold text-gray-900 dark:text-white">1. Cookies & Third-Party Advertising</h4>
+                <p>We use Google AdSense to serve advertisements. Google uses cookies to serve ads based on your prior visits to this or other websites. You may opt out of personalized advertising by visiting Google's Ads Settings.</p>
+                
+                <h4 class="font-bold text-gray-900 dark:text-white">2. Data We Collect</h4>
+                <p>We do not collect personal identifying information (PII) unless you contact us directly. Standard analytics (like IP addresses and browser types) are collected by our hosting provider to improve site performance.</p>
+                
+                <h4 class="font-bold text-gray-900 dark:text-white">3. Third-Party Links</h4>
+                <p>Our blog may contain links to other websites. We are not responsible for the privacy practices of those external sites.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Write Post Modal (Editor) -->
+    <div id="editor-ui" class="fixed inset-0 z-[60] bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
+            <div class="p-6 border-b dark:border-gray-800 flex justify-between items-center">
+                <h3 class="text-xl font-bold">Create New Post</h3>
+                <button onclick="toggleEditor()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <input type="text" id="post-title" placeholder="Post Title" class="w-full p-3 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
+                <textarea id="post-content" rows="6" placeholder="Write your thoughts here..." class="w-full p-3 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none"></textarea>
+                
+                <div class="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <label class="text-xs text-gray-500 font-mono block mb-1">JSON SNIPPET (Copy/Paste this into the code):</label>
+                    <textarea id="code-output" readonly class="w-full text-xs font-mono bg-transparent border-none focus:ring-0 h-20 overflow-y-auto"></textarea>
+                </div>
+            </div>
+            <div class="p-6 border-t dark:border-gray-800 flex justify-end gap-3">
+                <button onclick="generatePostCode()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700">Update Local Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-12 border-t dark:border-gray-800 text-gray-400 text-sm">
+        <div class="flex justify-center gap-6 mb-4">
+            <a href="#" onclick="togglePrivacy()" class="hover:text-indigo-600 underline">Privacy Policy</a>
+            <a href="mailto:contact@example.com" class="hover:text-indigo-600 underline">Contact Us</a>
+        </div>
+        <p>&copy; 2026 Daily Blog. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // --- DATA STORE ---
+        // To add posts permanently, paste the generated JSON from the 'Write Post' tool into this array.
+        const blogPosts = [
+            {
+                id: 1,
+                title: "Monetizing Your Passion with AdSense",
+                category: "Tech",
+                date: "2026-02-14",
+                content: "To get approved for Google AdSense, your blog needs high-quality, original content, a clear privacy policy, and a mobile-responsive design. This template includes all three of these requirements right out of the box!",
+                image: "https://images.unsplash.com/photo-1554224155-1696413575a8?w=800&q=80"
+            },
+            {
+                id: 2,
+                title: "Consistency is Key for Blog Growth",
+                category: "Life",
+                date: "2026-02-13",
+                content: "Posting daily builds trust with search engines like Google and keeps your audience engaged. Focus on providing value in every post, even when you're publishing frequently.",
+                image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80"
+            }
+        ];
+
+        // --- CORE FUNCTIONS ---
+        function renderPosts(postsToRender) {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '';
+            
+            // Sort by date (newest first)
+            const sorted = [...postsToRender].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sorted.forEach(post => {
+                container.innerHTML += `
+                    <article class="blog-card bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm flex flex-col md:flex-row h-full">
+                        <img src="${post.image}" class="w-full md:w-1/3 h-48 md:h-auto object-cover" alt="Blog cover image">
+                        <div class="p-6 flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-indigo-500 uppercase tracking-widest">${post.category}</span>
+                                <h3 class="text-2xl font-bold mt-2 mb-3 leading-tight hover:text-indigo-600 cursor-pointer transition-colors">${post.title}</h3>
+                                <p class="text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed">${post.content}</p>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between">
+                                <span class="text-xs text-gray-400"><i class="far fa-calendar-alt mr-1"></i> ${new Date(post.date).toLocaleDateString()}</span>
+                                <a href="#" class="text-indigo-600 text-sm font-bold hover:underline">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+        }
+
+        // --- EVENT HANDLERS ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('dark-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        function toggleEditor() {
+            const el = document.getElementById('editor-ui');
+            el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function togglePrivacy() {
+            const el = document.getElementById('privacy-modal');
+            el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function closeCookies() {
+            document.getElementById('cookie-banner').classList.add('hidden');
+        }
+
+        function generatePostCode() {
+            const titleInput = document.getElementById('post-title').value;
+            const contentInput = document.getElementById('post-content').value;
+
+            if(!titleInput || !contentInput) return;
+
+            const newPost = {
+                id: Date.now(),
+                title: titleInput,
+                category: "Life", // Default category
+                date: new Date().toISOString().split('T')[0],
+                content: contentInput,
+                image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80"
+            };
+
+            // Show user the code to paste into the file permanently
+            document.getElementById('code-output').value = JSON.stringify(newPost, null, 4) + ",";
+            
+            // Add to current session preview
+            blogPosts.unshift(newPost);
+            renderPosts(blogPosts);
+            
+            // Clean inputs
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+        }
+
+        function searchPosts() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = blogPosts.filter(p => 
+                p.title.toLowerCase().includes(query) || 
+                p.content.toLowerCase().includes(query)
+            );
+            renderPosts(filtered);
+        }
+
+        function filterPosts(category) {
+            // UI Button Active State
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('bg-white', 'border');
+            });
+            event.target.classList.add('bg-indigo-600', 'text-white');
+
+            if(category === 'All') {
+                renderPosts(blogPosts);
+            } else {
+                renderPosts(blogPosts.filter(p => p.category === category));
+            }
+        }
+
+        // Initial Load
+        window.onload = () => renderPosts(blogPosts);
+    </script>
+</body>
+</html>
